@@ -52,7 +52,7 @@ resource "aws_lambda_function" "vaultwarden_lambda" {
   function_name = "vaultwarden"
   role          = aws_iam_role.lambda_execution_role.arn
   package_type  = "Image"  # <- Use Image type instead of ZIP
-  image_uri     = "pyrocro/vaultwarden-lambda-s3-storage:latest"  # <- DockerHub image
+  image_uri     = "pyrocro/vaultwarden-lambda-s3-storage"  # <- DockerHub image
 }
 
 # Updated S3 Bucket for Backups

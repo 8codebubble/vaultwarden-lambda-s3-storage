@@ -22,7 +22,6 @@ jobs:
           curl -L $VAULTWARDEN_URL -o vaultwarden.zip
           unzip vaultwarden.zip -d vaultwarden
 
-
       - name: Generate Litestream configuration
         run: |
           cat <<EOF > litestream.yml
@@ -38,7 +37,10 @@ jobs:
       - name: Build Docker image
         run: |
           docker build -t vaultwarden-lambda-s3-storage .
-          docker tag vaultwarden-lambda-s3-storage ${{ secrets.DOCKERHUB_USERNAME }}/vaultwarden-lambda-s3-storage:latest
+
+      - name: Tag Image for DockerHub
+        run: |
+          docker tag vaultwarden-lambda-s3-storage:latest ${{ secrets.DOCKERHUB_USERNAME }}/vaultwarden-lambda-s3-storage:latest
 
       - name: Push to DockerHub
         run: |
@@ -52,8 +54,26 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
 
-      - name: Update Lambda function
-        run: |
-          aws lambda update-function-code --function-name vaultwarden \
-            --image-uri ${{ secrets.DOCKERHUB_USERNAME }}/vaultwarden-lambda-s3-storage:latest
+      - name: Login to Amazon ECR
+        uses: aws-actions/amazon-ecr-login@v1
 
+      - name: Tag and Push Image to AWS ECR
+        env:
+          AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
+          AWS_REGION: ${{ secrets.AWS_REGION }}
+          ECR_REPOSITORY: vaultwarden-lambda-s3-storage
+        run: |
+          ECR_REGISTRY=${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com
+          # Tag the image for ECR
+          docker tag vaultwarden-lambda-s3-storage:latest ${ECR_REGISTRY}/${ECR_REPOSITORY}:latest
+          # Push the image to ECR
+          docker push ${ECR_REGISTRY}/${ECR_REPOSITORY}:latest
+
+      - name: Update Lambda function
+        env:
+          AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
+          AWS_REGION: ${{ secrets.AWS_REGION }}
+          ECR_REPOSITORY: vaultwarden-lambda-s3-storage
+        run: |
+          ECR_REGISTRY=${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com
+          aws lambda update-function-code --function-name vaultwarden --image-uri ${ECR_REGISTRY}/${ECR_REPOSITORY}:latest
