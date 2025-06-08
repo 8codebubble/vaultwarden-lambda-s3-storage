@@ -1,7 +1,3 @@
-provider "aws" {
-  region = "us-east-1"
-}
-
 # Create IAM user for Lambda deployment
 resource "aws_iam_user" "lambda_deployer" {
   name = "vaultwarden_lambda_deployer"

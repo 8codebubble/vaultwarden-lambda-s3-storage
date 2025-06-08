@@ -1,7 +1,3 @@
-provider "aws" {
-  region = "us-east-1"
-}
-
 # Define bucket name as a variable
 variable "bucket_name" {
   default = "vaultwarden-backup-bucket"
