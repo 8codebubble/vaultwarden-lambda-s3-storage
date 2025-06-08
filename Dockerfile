@@ -1,16 +1,14 @@
 # Use an AWS Lambda-compatible base image
 FROM public.ecr.aws/lambda/provided:latest
 
-# Install `tar` manually from the expected GNU source URL
-RUN curl -L https://ftp.gnu.org/gnu/tar/tar-1.34.tar.gz -o tar.tar.gz && \
-    mkdir /tar-install && cd /tar-install && \
-    gzip -d ../tar.tar.gz && \
-    tar -xvf ../tar.tar && \
-    ./configure && make && make install
+# Install `tar` using BusyBox (since package managers are unavailable)
+RUN curl -L https://busybox.net/downloads/binaries/latest/busybox-x86_64 \
+    -o /usr/local/bin/busybox && chmod +x /usr/local/bin/busybox && \
+    ln -s /usr/local/bin/busybox /usr/local/bin/tar
 
 # Install SQLite manually
 RUN curl -L https://sqlite.org/2024/sqlite-tools-linux-x86_64.tar.gz -o sqlite.tar.gz && \
-    tar -xzf sqlite.tar.gz -C /usr/local/bin/ && \
+    /usr/local/bin/tar -xzf sqlite.tar.gz -C /usr/local/bin/ && \
     chmod +x /usr/local/bin/sqlite3 && rm sqlite.tar.gz
 
 # Install Litestream for SQLite replication
