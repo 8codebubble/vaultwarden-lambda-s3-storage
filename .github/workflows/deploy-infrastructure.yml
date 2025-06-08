@@ -26,6 +26,11 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
 
+      - name: where am I
+        run: pwd
+      - name: list directory
+        run: ls -la
+      
       - name: Initialize Terraform
         run: terraform init
 
