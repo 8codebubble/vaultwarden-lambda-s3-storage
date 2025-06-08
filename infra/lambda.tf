@@ -2,7 +2,7 @@
 resource "aws_iam_role" "lambda_execution_role" {
   name = "vaultwarden_lambda_execution_role"
   assume_role_policy = jsonencode({
-    Version = "2012-10-17"
+    Version = "2012-10-17",
     Statement = [
       {
         Effect = "Allow",
@@ -22,7 +22,7 @@ resource "aws_iam_policy_attachment" "lambda_basic_execution" {
   policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
 }
 
-# IAM Policy for S3 Access (Updated Bucket Name)
+# IAM Policy for S3 Access
 resource "aws_iam_policy" "s3_access_policy" {
   name        = "VaultwardenLambdaS3Access"
   description = "Allows Lambda to access S3 for backups"
@@ -47,21 +47,12 @@ resource "aws_iam_role_policy_attachment" "attach_s3_access" {
   policy_arn = aws_iam_policy.s3_access_policy.arn
 }
 
-# Archive Lambda Function Code
-data "archive_file" "lambda_zip" {
-  type        = "zip"
-  source_file = "lambda_function.py"
-  output_path = "lambda_function.zip"
-}
-
-# Create Lambda Function
+# Create Lambda Function (Using DockerHub Image Instead of ZIP)
 resource "aws_lambda_function" "vaultwarden_lambda" {
   function_name = "vaultwarden"
   role          = aws_iam_role.lambda_execution_role.arn
-  handler       = "lambda_function.lambda_handler"
-  runtime       = "python3.8"
-  filename      = data.archive_file.lambda_zip.output_path
-  source_code_hash = data.archive_file.lambda_zip.output_base64sha256
+  package_type  = "Image"  # <- Use Image type instead of ZIP
+  image_uri     = "pyrocro/vaultwarden-lambda-s3-storage:latest"  # <- DockerHub image
 }
 
 # Updated S3 Bucket for Backups
@@ -69,7 +60,7 @@ resource "aws_s3_bucket" "vaultwarden_backup" {
   bucket = "vaultwarden-litestream-bucket"
 }
 
-# S3 Bucket Policy for Secure Access (Updated Bucket Name)
+# S3 Bucket Policy for Secure Access
 resource "aws_s3_bucket_policy" "vaultwarden_s3_policy" {
   bucket = aws_s3_bucket.vaultwarden_backup.id
   policy = jsonencode({

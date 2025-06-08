@@ -1,11 +1,12 @@
-FROM debian:bullseye-slim
+# Use an AWS Lambda-compatible base image
+FROM public.ecr.aws/lambda/provided:latest
 
 # Install dependencies
-RUN apt-get update && apt-get install -y \
-    sqlite3 \
+RUN yum install -y \
+    sqlite \
     curl \
     ca-certificates \
-    && rm -rf /var/lib/apt/lists/*
+    && yum clean all
 
 # Install Litestream for SQLite replication
 RUN curl -L https://github.com/benbjohnson/litestream/releases/latest/download/litestream-linux-amd64 \
@@ -27,6 +28,9 @@ RUN chmod +x /entrypoint.sh
 # Expose Vaultwarden API port
 EXPOSE 8080
 
-# Start Vaultwarden with Litestream replication
-CMD ["/entrypoint.sh"]
+# AWS Lambda requires entrypoint to be `/lambda-entrypoint.sh`
+COPY lambda-entrypoint.sh /lambda-entrypoint.sh
+RUN chmod +x /lambda-entrypoint.sh
 
+# CMD for AWS Lambda container execution
+CMD ["/lambda-entrypoint.sh"]
