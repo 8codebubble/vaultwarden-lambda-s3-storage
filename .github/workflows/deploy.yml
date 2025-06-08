@@ -1,0 +1,53 @@
+name: Deploy Vaultwarden with Litestream
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Download latest Vaultwarden release
+        run: |
+          VAULTWARDEN_URL=$(curl -s https://api.github.com/repos/dani-garcia/vaultwarden/releases/latest | jq -r '.assets[] | select(.name | endswith(".zip")) | .browser_download_url')
+          curl -L $VAULTWARDEN_URL -o vaultwarden.zip
+          unzip vaultwarden.zip -d vaultwarden
+
+      - name: Generate Litestream configuration
+        run: |
+          echo "dbs:" > litestream.yml
+          echo "  - path: /vaultwarden/data/db.sqlite3" >> litestream.yml
+          echo "    replicas:" >> litestream.yml
+          echo "      - url: ${{ secrets.LITESTREAM_REPLICA_URL }}" >> litestream.yml
+
+      - name: Build Docker image
+        run: |
+          docker build -t vaultwarden-lambda-s3-storage .
+          docker tag vaultwarden-lambda-s3-storage ${{ secrets.DOCKERHUB_USERNAME }}/vaultwarden-lambda-s3-storage:latest
+
+      - name: Push to DockerHub
+        run: |
+          echo "${{ secrets.DOCKERHUB_PASSWORD }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/vaultwarden-lambda-s3-storage:latest
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+
+      - name: Update Lambda function
+        run: |
+          aws lambda update-function-code --function-name vaultwarden \
+            --image-uri ${{ secrets.DOCKERHUB_USERNAME }}/vaultwarden-lambda-s3-storage:latest
+

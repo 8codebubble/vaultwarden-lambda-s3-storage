@@ -1,0 +1,17 @@
+# Terraform state & backup files
+*.tfstate
+*.tfstate.backup
+
+# Terraform caching & temp directories
+.terraform/
+.terraform.lock.hcl
+
+# Ignore local environment variables
+.env
+
+# Ignore Terraform plan output files
+*.tfplan
+
+# Ignore log files
+*.log
+
