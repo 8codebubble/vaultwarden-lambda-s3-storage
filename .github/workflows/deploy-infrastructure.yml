@@ -33,9 +33,12 @@ jobs:
       
       - name: Initialize Terraform
         run: terraform init
+        
+      - name: Initialize Terraform
+        run: terraform plan -out=tfplan
 
       - name: Apply Terraform
-        run: terraform apply -chdir=/home/runner/work/vaultwarden-lambda-s3-storage/vaultwarden-lambda-s3-storage/infra -auto-approve
+        run: terraform apply -chdir=infra -auto-approve
         env:
           TF_VAR_aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           TF_VAR_aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
