@@ -1,6 +1,6 @@
 # Define bucket name as a variable
 variable "bucket_name" {
-  default = "vaultwarden-backup-bucket"
+  default = "vaultwarden-litestream-bucket"
 }
 
 # Create an S3 bucket
