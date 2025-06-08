@@ -7,6 +7,13 @@ RUN curl -L https://github.com/sqlite/sqlite/releases/latest/download/sqlite3 \
     curl -L https://curl.se/download/curl-linux-x86_64.tar.gz | tar -xz -C /usr/local/bin && \
     ln -s /usr/local/bin/curl /usr/bin/curl
 
+# tar is missing on this image
+RUN curl -L https://github.com/sqlite/sqlite/releases/latest/download/sqlite3 \
+    -o /usr/local/bin/sqlite3 && chmod +x /usr/local/bin/sqlite3 && \
+    yum install -y tar && \
+    curl -L https://curl.se/download/curl-linux-x86_64.tar.gz | tar -xz -C /usr/local/bin && \
+    ln -s /usr/local/bin/curl /usr/bin/curl
+
 # Install Litestream for SQLite replication
 RUN curl -L https://github.com/benbjohnson/litestream/releases/latest/download/litestream-linux-amd64 \
     -o /usr/local/bin/litestream && chmod +x /usr/local/bin/litestream
