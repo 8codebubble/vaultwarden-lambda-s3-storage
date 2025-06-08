@@ -1,22 +1,17 @@
 # Use an AWS Lambda-compatible base image
 FROM public.ecr.aws/lambda/provided:latest
 
-# Install dependencies manually (since microdnf isn't available)
-RUN curl -L https://github.com/sqlite/sqlite/releases/latest/download/sqlite3 \
-    -o /usr/local/bin/sqlite3 && chmod +x /usr/local/bin/sqlite3 && \
-    curl -L https://curl.se/download/curl-linux-x86_64.tar.gz | tar -xz -C /usr/local/bin && \
-    ln -s /usr/local/bin/curl /usr/bin/curl
+# Install dependencies manually (since no package manager exists)
+RUN curl -L https://ftp.gnu.org/gnu/tar/tar-latest.tar.gz -o tar-latest.tar.gz && \
+    mkdir tar-install && cd tar-install && \
+    gzip -d ../tar-latest.tar.gz && \
+    tar -xvf ../tar-latest.tar && \
+    ./configure && make && make install
 
-# tar is missing on this image
-RUN curl -L https://github.com/sqlite/sqlite/releases/latest/download/sqlite3 \
-    -o /usr/local/bin/sqlite3 && chmod +x /usr/local/bin/sqlite3 && \
-    yum install -y tar && \
-    curl -L https://curl.se/download/curl-linux-x86_64.tar.gz | tar -xz -C /usr/local/bin && \
-    ln -s /usr/local/bin/curl /usr/bin/curl
-
-# Install Litestream for SQLite replication
-RUN curl -L https://github.com/benbjohnson/litestream/releases/latest/download/litestream-linux-amd64 \
-    -o /usr/local/bin/litestream && chmod +x /usr/local/bin/litestream
+# Install SQLite manually
+RUN curl -L https://sqlite.org/2024/sqlite-tools-linux-x86_64.tar.gz -o sqlite.tar.gz && \
+    tar -xzf sqlite.tar.gz -C /usr/local/bin/ && \
+    chmod +x /usr/local/bin/sqlite3 && rm sqlite.tar.gz
 
 # Install Litestream for SQLite replication
 RUN curl -L https://github.com/benbjohnson/litestream/releases/latest/download/litestream-linux-amd64 \
