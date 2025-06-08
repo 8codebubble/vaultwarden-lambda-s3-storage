@@ -1,11 +1,11 @@
 # Use an AWS Lambda-compatible base image
 FROM public.ecr.aws/lambda/provided:latest
 
-# Install dependencies manually (since no package manager exists)
-RUN curl -L https://ftp.gnu.org/gnu/tar/tar-latest.tar.gz -o tar-latest.tar.gz && \
-    mkdir tar-install && cd tar-install && \
-    gzip -d ../tar-latest.tar.gz && \
-    tar -xvf ../tar-latest.tar && \
+# Install `tar` manually from the expected GNU source URL
+RUN curl -L https://ftp.gnu.org/gnu/tar/tar-1.34.tar.gz -o tar.tar.gz && \
+    mkdir /tar-install && cd /tar-install && \
+    gzip -d ../tar.tar.gz && \
+    tar -xvf ../tar.tar && \
     ./configure && make && make install
 
 # Install SQLite manually
