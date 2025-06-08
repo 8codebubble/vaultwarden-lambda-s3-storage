@@ -1,15 +1,8 @@
-# Use an AWS Lambda-compatible base image
-FROM public.ecr.aws/lambda/provided:latest
+# Use Amazon Linux 2 base image (supports `yum`)
+FROM amazonlinux:2
 
-# Install `tar` using BusyBox (since package managers are unavailable)
-RUN curl -L https://busybox.net/downloads/binaries/latest/busybox-x86_64 \
-    -o /usr/local/bin/busybox && chmod +x /usr/local/bin/busybox && \
-    ln -s /usr/local/bin/busybox /usr/local/bin/tar
-
-# Install SQLite manually
-RUN curl -L https://sqlite.org/2024/sqlite-tools-linux-x86_64.tar.gz -o sqlite.tar.gz && \
-    /usr/local/bin/tar -xzf sqlite.tar.gz -C /usr/local/bin/ && \
-    chmod +x /usr/local/bin/sqlite3 && rm sqlite.tar.gz
+# Install dependencies using yum
+RUN yum install -y tar sqlite curl ca-certificates && yum clean all
 
 # Install Litestream for SQLite replication
 RUN curl -L https://github.com/benbjohnson/litestream/releases/latest/download/litestream-linux-amd64 \
