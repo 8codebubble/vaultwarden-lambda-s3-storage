@@ -30,7 +30,7 @@ jobs:
         run: terraform init
 
       - name: Apply Terraform
-        run: terraform apply -chdir=/infra -auto-approve
+        run: terraform apply -chdir=infra -auto-approve
         env:
           TF_VAR_aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           TF_VAR_aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
