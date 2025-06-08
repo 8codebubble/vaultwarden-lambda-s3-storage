@@ -52,20 +52,6 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
 
-
-      - name: Ensure Lambda Function Exists
-        run: |
-          if ! aws lambda get-function --function-name vaultwarden; then
-            echo "Creating Lambda function..."
-            aws lambda create-function --function-name vaultwarden \
-              --runtime provided.al2 \
-              --role arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/LambdaExecutionRole \
-              --handler bootstrap \
-              --code ImageUri=${{ secrets.DOCKERHUB_USERNAME }}/vaultwarden-lambda-s3-storage:latest
-          else
-            echo "Lambda function already exists."
-          fi
-
       - name: Update Lambda function
         run: |
           aws lambda update-function-code --function-name vaultwarden \
