@@ -24,7 +24,7 @@ jobs:
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: us-east-1      
+          aws-region: ${{ secrets.AWS_REGION }}      
       
       - name: Initialize Terraform
         run: terraform init
@@ -46,10 +46,10 @@ jobs:
           TF_VAR_aws_region: ${{ secrets.AWS_REGION }}
 
 
-      - name: Store IAM Credentials in GitHub Secrets
-        run: |
-          gh secret set AWS_ACCESS_KEY_ID --body "$AWS_ACCESS_KEY_ID"
-          gh secret set AWS_SECRET_ACCESS_KEY --body "$AWS_SECRET_ACCESS_KEY"
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#      - name: Store IAM Credentials in GitHub Secrets
+#        run: |
+#          gh secret set AWS_ACCESS_KEY_ID --body "$AWS_ACCESS_KEY_ID"
+#          gh secret set AWS_SECRET_ACCESS_KEY --body "$AWS_SECRET_ACCESS_KEY"
+#        env:
+#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
