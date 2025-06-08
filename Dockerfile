@@ -1,8 +1,15 @@
 # Use an AWS Lambda-compatible base image
 FROM public.ecr.aws/lambda/provided:latest
 
-# Install dependencies
-RUN microdnf install -y sqlite curl ca-certificates && microdnf clean all
+# Install dependencies manually (since microdnf isn't available)
+RUN curl -L https://github.com/sqlite/sqlite/releases/latest/download/sqlite3 \
+    -o /usr/local/bin/sqlite3 && chmod +x /usr/local/bin/sqlite3 && \
+    curl -L https://curl.se/download/curl-linux-x86_64.tar.gz | tar -xz -C /usr/local/bin && \
+    ln -s /usr/local/bin/curl /usr/bin/curl
+
+# Install Litestream for SQLite replication
+RUN curl -L https://github.com/benbjohnson/litestream/releases/latest/download/litestream-linux-amd64 \
+    -o /usr/local/bin/litestream && chmod +x /usr/local/bin/litestream
 
 # Install Litestream for SQLite replication
 RUN curl -L https://github.com/benbjohnson/litestream/releases/latest/download/litestream-linux-amd64 \
