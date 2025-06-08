@@ -2,11 +2,7 @@
 FROM public.ecr.aws/lambda/provided:latest
 
 # Install dependencies
-RUN yum install -y \
-    sqlite \
-    curl \
-    ca-certificates \
-    && yum clean all
+RUN microdnf install -y sqlite curl ca-certificates && microdnf clean all
 
 # Install Litestream for SQLite replication
 RUN curl -L https://github.com/benbjohnson/litestream/releases/latest/download/litestream-linux-amd64 \
