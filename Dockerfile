@@ -21,10 +21,6 @@ COPY vaultwarden /vaultwarden/vaultwarden
 # Copy Litestream config
 COPY litestream.yml /etc/litestream.yml
 
-# Define entrypoint script
-COPY entrypoint.sh /entrypoint.sh
-RUN chmod +x /entrypoint.sh
-
 # Expose Vaultwarden API port
 EXPOSE 8080
 
