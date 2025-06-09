@@ -9,17 +9,16 @@ RUN yum install -y tar sqlite curl ca-certificates jq unzip && yum clean all
 
 # Use the GitHub API to get the download URL for the latest release asset
 # that ends with "litestream-linux-amd64.zip".
-RUN export LATEST_ASSET_URL=$(curl -s "https://api.github.com/repos/benbjohnson/litetream/releases/latest" | \
-      jq -r '.assets[] | select(.name | endswith("linux-amd64.zip")) | .browser_download_url') && \
-    echo "Downloading Litestream from: ${LATEST_ASSET_URL}" && \
-    # Download the zip asset to /tmp
-    curl -L "${LATEST_ASSET_URL}" -o /tmp/litestream.zip && \
-    # Unzip the asset into /usr/local/bin. Adjust the extracted file path if necessary.
-    unzip /tmp/litestream.zip -d /usr/local/bin/ && \
-    # Rename the extracted binary to "litestream" (adjust if the zip preserves directory structure)
+RUN export LATEST_ASSET_URL=$(curl -s "https://api.github.com/repos/benbjohnson/litestream/releases/latest" | \
+      jq -r '.assets[] | select(.name | endswith("linux-amd64.tar.gz")) | .browser_download_url') && \
+    echo "Downloading Litestream asset from: ${LATEST_ASSET_URL}" && \
+    curl -L "${LATEST_ASSET_URL}" -o /tmp/litestream.tar.gz && \
+    # Extract the tar.gz archive; assuming it contains a file named litestream-linux-amd64
+    tar -xzvf /tmp/litestream.tar.gz -C /usr/local/bin/ && \
+    # Rename the binary to "litestream" if needed. Adjust the source name if the archive structure differs.
     mv /usr/local/bin/litestream-linux-amd64 /usr/local/bin/litestream && \
     chmod +x /usr/local/bin/litestream && \
-    rm /tmp/litestream.zip
+    rm /tmp/litestream.tar.gz
 
 # Optionally, verify installation by printing the version
 RUN litestream --version
