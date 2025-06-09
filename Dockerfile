@@ -2,10 +2,16 @@
 FROM rust:1.66 as builder
 WORKDIR /src
 
-COPY vaultwarden /
+COPY vaultwarden ./vaultwarden/
 
 # Build Vaultwarden in release mode
+
+RUN cd $(ls -d ./vaultwarden/dani-garcia-vaultwarden*/ | head -n 1) && \
+    echo "Currently in $(pwd)" && \
+    mv -R * /src/vaultwarden
+
 WORKDIR /src/vaultwarden
+
 RUN cargo build --release
 
 # Use Amazon Linux 2 base image (supports `yum`)
