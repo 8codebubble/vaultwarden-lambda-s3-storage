@@ -5,7 +5,7 @@ FROM amazonlinux:2
 ENV VAULTWARDEN_DATA_DIR="/tmp/vaultwarden/data"
 
 # Install dependencies using yum
-RUN yum install -y tar sqlite curl ca-certificates jq unzip && yum clean all
+RUN yum install -y tar sqlite curl ca-certificates jq gzip && yum clean all
 
 # Use the GitHub API to get the download URL for the latest release asset
 # that ends with "litestream-linux-amd64.zip".
