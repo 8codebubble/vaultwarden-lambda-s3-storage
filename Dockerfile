@@ -21,7 +21,7 @@ RUN export LATEST_ASSET_URL=$(curl -s "https://api.github.com/repos/benbjohnson/
     rm /tmp/litestream.tar.gz
 
 # Optionally, verify installation by printing the version
-RUN litestream --version
+RUN litestream version
 
 # Set working directory
 WORKDIR /vaultwarden
