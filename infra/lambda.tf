@@ -47,15 +47,36 @@ resource "aws_iam_role_policy_attachment" "attach_s3_access" {
   policy_arn = aws_iam_policy.s3_access_policy.arn
 }
 
-# Create Lambda Function (Using DockerHub Image Instead of ZIP)
+# Create Lambda Function (Using DockerHub Image instead of ZIP)
 resource "aws_lambda_function" "vaultwarden_lambda" {
   function_name = "vaultwarden"
   role          = aws_iam_role.lambda_execution_role.arn
-  package_type  = "Image"  # <- Use Image type instead of ZIP
-  image_uri     = "pyrocro/vaultwarden-lambda-s3-storage"  # <- DockerHub image
+  package_type  = "Image"  # Use container image deployment.
+  image_uri     = "${aws_ecr_repository.vaultwarden_repo.repository_url}:latest"
 }
 
-# Updated S3 Bucket for Backups
+###################################
+# Create Lambda Function URL      #
+###################################
+resource "aws_lambda_function_url" "vaultwarden_url" {
+  function_name      = aws_lambda_function.vaultwarden_lambda.function_name
+  authorization_type = "NONE"  # Change to "AWS_IAM" if you want to require authentication
+
+  cors {
+    allow_origins = ["*"]   # Adjust origins as needed.
+    allow_methods = ["*"]
+  }
+}
+
+# Output the Lambda Function URL
+output "lambda_function_url" {
+  description = "The HTTPS endpoint for the Lambda Function"
+  value       = aws_lambda_function_url.vaultwarden_url.function_url
+}
+
+########################################
+# Updated S3 Bucket for Backups        #
+########################################
 resource "aws_s3_bucket" "vaultwarden_backup" {
   bucket = "vaultwarden-litestream-bucket"
 }

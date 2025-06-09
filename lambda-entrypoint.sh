@@ -4,8 +4,8 @@ set -e
 # AWS Lambda runtime requires initialization
 echo "Starting Vaultwarden Lambda container..."
 
-# Ensure required directories exist
-mkdir -p /vaultwarden/data
+# Create the directory (if necessary) so that it's available when the container starts.
+mkdir -p ${VAULTWARDEN_DATA_DIR}
 
 # Restore SQLite database from S3 if available
 litestream restore -if-replica-exists /vaultwarden/data/db.sqlite3
