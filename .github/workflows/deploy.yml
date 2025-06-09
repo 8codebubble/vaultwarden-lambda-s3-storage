@@ -29,9 +29,9 @@ jobs:
             - path: /tmp/vaultwarden/data/db.sqlite3
               replicas:
                 - type: s3
-                  bucket: "${{ env.LITESTREAM_BUCKET }}"
+                  bucket: "${{ vars.LITESTREAM_BUCKET }}"
                   path: db.sqlite3
-                  endpoint: "${{ env.LITESTREAM_ENDPOINT }}"
+                  endpoint: "${{ vars.LITESTREAM_ENDPOINT }}"
           EOF
 
       - name: Build Docker image
