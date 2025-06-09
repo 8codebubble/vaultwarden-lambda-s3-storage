@@ -9,8 +9,8 @@ RUN yum install -y tar sqlite curl ca-certificates jq unzip && yum clean all
 
 # Use the GitHub API to get the download URL for the latest release asset
 # that ends with "litestream-linux-amd64.zip".
-RUN export LATEST_ASSET_URL=$(curl -s "https://api.github.com/repos/${OWNER}/${REPO}/releases/latest" | \
-      jq -r '.assets[] | select(.name | endswith("litestream-linux-amd64.zip")) | .browser_download_url') && \
+RUN export LATEST_ASSET_URL=$(curl -s "https://api.github.com/repos/benbjohnson/lightstream/releases/latest" | \
+      jq -r '.assets[] | select(.name | endswith("linux-amd64.zip")) | .browser_download_url') && \
     echo "Downloading Litestream from: ${LATEST_ASSET_URL}" && \
     # Download the zip asset to /tmp
     curl -L "${LATEST_ASSET_URL}" -o /tmp/litestream.zip && \
