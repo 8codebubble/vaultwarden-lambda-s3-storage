@@ -8,7 +8,7 @@ echo "Starting Vaultwarden Lambda container..."
 echo $VAULTWARDEN_DATA_DIR
 echo ${VAULTWARDEN_DATA_DIR}
 echo "${VAULTWARDEN_DATA_DIR}"
-mkdir ${VAULTWARDEN_DATA_DIR}
+#mkdir ${VAULTWARDEN_DATA_DIR}
 
 # Restore SQLite database from S3 if available
 litestream restore -if-replica-exists ${VAULTWARDEN_DATA_DIR}/db.sqlite3
