@@ -16,7 +16,7 @@ RUN export LATEST_ASSET_URL=$(curl -s "https://api.github.com/repos/benbjohnson/
     # Extract the tar.gz archive; assuming it contains a file named litestream-linux-amd64
     tar -xzvf /tmp/litestream.tar.gz -C /usr/local/bin/ && \
     # Rename the binary to "litestream" if needed. Adjust the source name if the archive structure differs.
-    mv /usr/local/bin/litestream-linux-amd64 /usr/local/bin/litestream && \
+    # mv /usr/local/bin/litestream-linux-amd64 /usr/local/bin/litestream && \
     chmod +x /usr/local/bin/litestream && \
     rm /tmp/litestream.tar.gz
 
