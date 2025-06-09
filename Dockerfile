@@ -2,17 +2,7 @@
 FROM rust:1.66 as builder
 WORKDIR /src
 
-# Install required tools
-RUN apt-get update && apt-get install -y curl unzip
-
-# Accept version as build argument (adjust version as desired)
-ARG VAULTWARDEN_VERSION=1.34.1
-
-# Download the Vaultwarden release ZIP (source archive)
-RUN curl -L -o vaultwarden.zip "https://github.com/dani-garcia/vaultwarden/archive/refs/tags/v${VAULTWARDEN_VERSION}.zip"
-
-# Unzip – the archive will extract to "vaultwarden-<version>"
-RUN unzip vaultwarden.zip && mv "vaultwarden-${VAULTWARDEN_VERSION}" vaultwarden
+COPY vaultwarden /
 
 # Build Vaultwarden in release mode
 WORKDIR /src/vaultwarden
