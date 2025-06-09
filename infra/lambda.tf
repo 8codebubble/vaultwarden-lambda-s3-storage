@@ -37,7 +37,12 @@ resource "aws_iam_policy" "s3_access_policy" {
           "s3:DeleteObject"
         ],
         Resource = "arn:aws:s3:::vaultwarden-litestream-bucket/*"
-      }
+      },
+      {
+        Effect   = "Allow",
+        Action   = "s3:ListBucket",
+        Resource = "arn:aws:s3:::vaultwarden-litestream-bucket"
+      }      
     ]
   })
 }
