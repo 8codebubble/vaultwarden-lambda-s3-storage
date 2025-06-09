@@ -1,3 +1,23 @@
+# Builder stage
+FROM rust:1.66 as builder
+WORKDIR /src
+
+# Install required tools
+RUN apt-get update && apt-get install -y curl unzip
+
+# Accept version as build argument (adjust version as desired)
+ARG VAULTWARDEN_VERSION=1.34.1
+
+# Download the Vaultwarden release ZIP (source archive)
+RUN curl -L -o vaultwarden.zip "https://github.com/dani-garcia/vaultwarden/archive/refs/tags/v${VAULTWARDEN_VERSION}.zip"
+
+# Unzip – the archive will extract to "vaultwarden-<version>"
+RUN unzip vaultwarden.zip && mv "vaultwarden-${VAULTWARDEN_VERSION}" vaultwarden
+
+# Build Vaultwarden in release mode
+WORKDIR /src/vaultwarden
+RUN cargo build --release
+
 # Use Amazon Linux 2 base image (supports `yum`)
 FROM amazonlinux:2
 
@@ -27,7 +47,10 @@ RUN litestream version
 WORKDIR /vaultwarden
 
 # Copy Vaultwarden binary from latest release
-COPY vaultwarden /vaultwarden/vaultwarden
+#COPY vaultwarden /vaultwarden/vaultwarden
+COPY --from=builder /src/vaultwarden/target/release/vaultwarden /vaultwarden/vaultwarden
+RUN chmod +x /vaultwarden/vaultwarden
+
 
 # Copy Litestream config
 COPY litestream.yml /etc/litestream.yml
