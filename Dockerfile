@@ -1,5 +1,5 @@
 # Builder stage
-FROM rust:1.66 as builder
+FROM rust:1.66 AS builder
 WORKDIR /src
 
 COPY vaultwarden ./vaultwarden/
@@ -23,7 +23,7 @@ FROM amazonlinux:2
 ENV VAULTWARDEN_DATA_DIR="/tmp/vaultwarden/data"
 
 # Install dependencies using yum
-RUN yum install -y tar sqlite curl ca-certificates jq gzip && yum openssl libssl3 clean all
+RUN yum install -y tar sqlite curl ca-certificates jq gzip openssl libssl3 && yum clean all
 
 # Use the GitHub API to get the download URL for the latest release asset
 # that ends with "litestream-linux-amd64.zip".
