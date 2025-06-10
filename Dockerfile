@@ -50,7 +50,7 @@ COPY --from=builder /src/vaultwarden/target/release/vaultwarden /vaultwarden/vau
 RUN chmod +x /vaultwarden/vaultwarden
 
 # Copy web-vault wesite from latest release
-COPY web-vault /vaultwarden/vaultwarden
+COPY web-vault /vaultwarden/
 
 
 # Copy Litestream config
