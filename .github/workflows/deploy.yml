@@ -96,3 +96,8 @@ jobs:
         run: |
           ECR_REGISTRY=${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com
           aws lambda update-function-code --function-name vaultwarden --image-uri ${ECR_REGISTRY}/${ECR_REPOSITORY}:latest
+          # Update the environment variables of the lambda function.
+          # Adjust the key-value pairs as needed.
+          aws lambda update-function-configuration \
+            --function-name vaultwarden \
+            --environment "Variables={DATA_FOLDER=${{ vars.VAULTWARDEN_DATA_FOLDER }},ADMIN_TOKEN=${{ secrets.VAULTWARDEN_ADMIN_TOKEN }}}"
