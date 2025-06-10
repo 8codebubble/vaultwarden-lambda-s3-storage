@@ -14,7 +14,7 @@ RUN export VW_ROOT_PATH=$(ls -d ./vaultwarden/dani-garcia-vaultwarden*/ | head -
 
 WORKDIR /src/vaultwarden
 
-RUN cargo build --release
+RUN cargo build --release --features sqlite
 
 # Use Amazon Linux 2 base image (supports `yum`)
 FROM amazonlinux:2
