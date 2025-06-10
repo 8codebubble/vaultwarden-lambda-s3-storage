@@ -58,6 +58,9 @@ resource "aws_lambda_function" "vaultwarden_lambda" {
   role          = aws_iam_role.lambda_execution_role.arn
   package_type  = "Image"  # Use container image deployment.
   image_uri     = "${aws_ecr_repository.vaultwarden_repo.repository_url}:latest"
+  
+  # Limit concurrency to 1 instances.
+  reserved_concurrent_executions = 1
 }
 
 ###################################

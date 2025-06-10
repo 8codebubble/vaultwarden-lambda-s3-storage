@@ -21,11 +21,11 @@ RUN mv vaultwarden-aws-lambda ./vaultwarden
 
 # Build Vaultwarden in release mode
 
-RUN export VW_ROOT_PATH=$(ls -d ./vaultwarden/dani-garcia-vaultwarden*/ | head -n 1) && \
-    echo "VW_ROOT_PATH = ${VW_ROOT_PATH}" && \
-    cd ${VW_ROOT_PATH} && \
-    echo "Currently in $(pwd)" && \
-    mv * /src/vaultwarden
+#RUN export VW_ROOT_PATH=$(ls -d ./vaultwarden/dani-garcia-vaultwarden*/ | head -n 1) && \
+#    echo "VW_ROOT_PATH = ${VW_ROOT_PATH}" && \
+#    cd ${VW_ROOT_PATH} && \
+#    echo "Currently in $(pwd)" && \
+#    mv * /src/vaultwarden
 
 WORKDIR /src/vaultwarden
 
