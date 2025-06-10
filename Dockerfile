@@ -6,7 +6,9 @@ COPY vaultwarden ./vaultwarden/
 
 # Build Vaultwarden in release mode
 
-RUN cd $(ls -d ./vaultwarden/dani-garcia-vaultwarden*/ | head -n 1) && \
+RUN export VW_ROOT_PATH=$(ls -d ./vaultwarden/dani-garcia-vaultwarden*/ | head -n 1) && \
+    echo "VW_ROOT_PATH = ${VW_ROOT_PATH}" && \
+    cd ${VW_ROOT_PATH} && \
     echo "Currently in $(pwd)" && \
     mv -R * /src/vaultwarden
 
