@@ -14,7 +14,10 @@ ENV PATH=/root/.cargo/bin:$PATH
 
 WORKDIR /src
 
-COPY vaultwarden ./vaultwarden/
+#COPY vaultwarden ./vaultwarden/
+
+RUN git clone https://github.com/8codebubble/vaultwarden-aws-lambda.git
+RUN mv vaultwarden-aws-lambda ./vaultwarden
 
 # Build Vaultwarden in release mode
 
