@@ -97,6 +97,9 @@ jobs:
           ECR_REGISTRY=${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com
           aws lambda update-function-code --function-name vaultwarden --image-uri ${ECR_REGISTRY}/${ECR_REPOSITORY}:latest
           # Update the environment variables of the lambda function.
+          echo "Waiting for function update to complete..."
+          aws lambda wait function-updated --function-name vaultwarden
+          echo "Function update completed."
           # Adjust the key-value pairs as needed.
           aws lambda update-function-configuration \
             --function-name vaultwarden \
