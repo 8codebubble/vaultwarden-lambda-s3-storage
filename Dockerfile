@@ -23,7 +23,7 @@ FROM amazonlinux:2
 ENV VAULTWARDEN_DATA_DIR="/tmp/vaultwarden/data"
 
 # Install dependencies using yum
-RUN yum install -y tar sqlite curl ca-certificates jq gzip && yum clean all
+RUN yum install -y tar sqlite curl ca-certificates jq gzip && yum openssl libssl3 clean all
 
 # Use the GitHub API to get the download URL for the latest release asset
 # that ends with "litestream-linux-amd64.zip".
@@ -48,6 +48,9 @@ WORKDIR /vaultwarden
 #COPY vaultwarden /vaultwarden/vaultwarden
 COPY --from=builder /src/vaultwarden/target/release/vaultwarden /vaultwarden/vaultwarden
 RUN chmod +x /vaultwarden/vaultwarden
+
+# Copy web-vault wesite from latest release
+COPY web-vault /vaultwarden/vaultwarden
 
 
 # Copy Litestream config

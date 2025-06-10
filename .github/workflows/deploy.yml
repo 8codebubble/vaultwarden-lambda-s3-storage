@@ -16,6 +16,22 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
+      - name: Download Web Vault for Vaultwarden
+        run: |
+          # Get the browser download URL for the latest web-vault tarball asset from bw_web_builds
+          WEB_VAULT_URL=$(curl -s "https://api.github.com/repos/dani-garcia/bw_web_builds/releases/latest" | \
+            jq -r '.assets[] | select(.name | endswith("tar.gz")) | .browser_download_url')
+          echo "Downloading Web Vault from: $WEB_VAULT_URL"
+          # Download the tarball
+          curl -L "$WEB_VAULT_URL" -o web-vault.tar.gz
+          # Create a directory for the extracted web vault
+          mkdir -p web-vault
+          # Extract the tarball into the created directory.
+          tar -xzvf web-vault.tar.gz -C web-vault
+          pwd
+          ls -la
+          ls ./web-vault/ -la
+            
       - name: Download latest Vaultwarden release
         run: |
           VAULTWARDEN_URL=$(curl -s https://api.github.com/repos/dani-garcia/vaultwarden/releases/latest | jq -r '.zipball_url')
