@@ -35,7 +35,7 @@ RUN cargo build --release --features sqlite
 FROM amazonlinux:2
 
 # Set the default value for the data directory to a writable location
-ENV DATA_FOLDER="/tmp/vaultwarden/data"
+# Setting this in github actions instead #ENV DATA_FOLDER="/tmp/vaultwarden/data"
 
 # Install dependencies using yum
 RUN yum install -y tar sqlite curl ca-certificates jq gzip openssl11-libs && yum clean all
