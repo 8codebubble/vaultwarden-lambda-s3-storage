@@ -1,5 +1,17 @@
 # Builder stage
-FROM rust:1.66 AS builder
+FROM amazonlinux:2 as builder
+
+# Update system and install required packages
+RUN yum update -y && \
+    # Install development tools, curl, unzip, and OpenSSL development package
+    yum groupinstall -y "Development Tools" && \
+    yum install -y curl unzip openssl-devel pkgconfig && \
+    yum clean all
+
+# Install Rust using rustup (this will install Rust in /root/.cargo)
+RUN curl https://sh.rustup.rs -sSf | sh -s -- -y
+ENV PATH=/root/.cargo/bin:$PATH
+
 WORKDIR /src
 
 COPY vaultwarden ./vaultwarden/
