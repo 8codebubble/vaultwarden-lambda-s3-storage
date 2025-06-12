@@ -61,6 +61,9 @@ resource "aws_lambda_function" "vaultwarden_lambda" {
   
   # Limit concurrency to 1 instances.
   reserved_concurrent_executions = 1
+
+  # timeout in seconds (this is needed to give response enough time complete)
+  timeout     = 30  
 }
 
 ###################################
